@@ -1,11 +1,11 @@
 # Claude code Scaffold
 
-  一条命令，在任意新项目中复刻 ProtoMind AI 工程化配置。
+  一条命令，在任意新项目中复刻 Claude code AI 工程化配置。
 
   ## 快速开始
 
   ```bash
-  curl -fsSL https://raw.githubusercontent.com/你的用户名/protomind-scaffold/main/init.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/你的用户名/claude-scaffold/main/init.sh | bash
 
   它做了什么
 
@@ -32,7 +32,7 @@
 
   目录结构
 
-  protomind-scaffold/
+  claude-scaffold/
   ├── init.sh              # 引导脚本
   ├── template/
   │   ├── .claude/
