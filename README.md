@@ -1,4 +1,4 @@
-# ProtoMind Scaffold
+# Claude code Scaffold
 
   一条命令，在任意新项目中复刻 ProtoMind AI 工程化配置。
 
