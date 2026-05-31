@@ -15,12 +15,43 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
 NC='\033[0m'
 
 info()  { echo -e "${BLUE}[INFO]${NC} $1"; }
 ok()    { echo -e "${GREEN}[OK]${NC} $1"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
+
+# Spinner for long-running operations
+spinner() {
+  local pid=$1
+  local msg=$2
+  local chars='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  local i=0
+  while kill -0 "$pid" 2>/dev/null; do
+    printf "\r  ${CYAN}${chars:$i:1}${NC} %s" "$msg"
+    i=$(( (i + 1) % ${#chars} ))
+    sleep 0.1
+  done
+  printf "\r"
+}
+
+# Progress bar
+progress_bar() {
+  local current=$1
+  local total=$2
+  local label=$3
+  local width=30
+  local pct=$((current * 100 / total))
+  local filled=$((current * width / total))
+  local empty=$((width - filled))
+  local bar=""
+  for ((i=0; i<filled; i++)); do bar+="█"; done
+  for ((i=0; i<empty; i++)); do bar+="░"; done
+  printf "\r  ${CYAN}[%s]${NC} %3d%% %s" "$bar" "$pct" "$label"
+}
 
 usage() {
   cat <<EOF
@@ -64,59 +95,90 @@ TMPDIR=$(mktemp -d)
 trap 'rm -rf "$TMPDIR"' EXIT
 
 echo ""
-echo "============================================"
-echo "  Claude Scaffold Installer"
-echo "============================================"
+echo -e "${BOLD}============================================${NC}"
+echo -e "${BOLD}  Claude Scaffold Installer${NC}"
+echo -e "${BOLD}============================================${NC}"
 echo ""
 
-# ---------- clone ----------
+# ---------- clone with spinner ----------
 info "Cloning scaffold (version: ${VERSION})..."
-if ! git clone --depth 1 --branch "$VERSION" "$REPO_URL" "$TMPDIR/scaffold" 2>/dev/null; then
-  git clone --depth 1 "$REPO_URL" "$TMPDIR/scaffold" 2>/dev/null || \
-    error "Failed to clone repository. Check network and GITHUB_TOKEN."
+info "Connecting to GitHub... (this may take a moment)"
+
+git clone --depth 1 --branch "$VERSION" "$REPO_URL" "$TMPDIR/scaffold" 2>"$TMPDIR/git.log" &
+CLONE_PID=$!
+spinner $CLONE_PID "Downloading from GitHub..."
+
+if ! wait $CLONE_PID; then
+  git clone --depth 1 "$REPO_URL" "$TMPDIR/scaffold" 2>"$TMPDIR/git.log" &
+  CLONE_PID=$!
+  spinner $CLONE_PID "Retrying download..."
+  wait $CLONE_PID || error "Failed to clone repository. Check network and GITHUB_TOKEN."
 fi
 ok "Repository cloned."
+echo ""
 
 SRC="$TMPDIR/scaffold/template"
 DST="$(pwd)"
 
-# ---------- copy helpers ----------
+# ---------- count files first ----------
+FILE_COUNT=$(find "$SRC" -type f | wc -l)
+CURRENT=0
+
+# ---------- copy with progress ----------
 copy_file() {
   local src="$1"
   local rel="$2"
   local dst="$DST/$rel"
 
   if [[ "$NO_OVERWRITE" == true && -e "$dst" ]]; then
-    warn "Skip (exists): $rel"
-    return
+    return 1
   fi
 
   mkdir -p "$(dirname "$dst")"
   cp "$src" "$dst"
-  ok "$rel"
-}
-
-copy_tree() {
-  local src_dir="$1"
-
-  find "$src_dir" -type f | while read -r file; do
-    local rel="${file#$SRC/}"
-    copy_file "$file" "$rel"
-  done
+  return 0
 }
 
 info "Installing to: $DST"
-echo ""
-
-# ---------- install ----------
 if [[ "$SKILLS_ONLY" == true ]]; then
   info "Mode: skills-only"
-  copy_tree "$SRC/.claude/skills"
+  FILE_COUNT=$(find "$SRC/.claude/skills" -type f | wc -l)
 else
   info "Mode: full install"
-  copy_tree "$SRC"
+fi
+echo ""
+
+SKIPPED=0
+COPIED=0
+
+install_files() {
+  local search_dir="$1"
+
+  find "$search_dir" -type f | while read -r file; do
+    local rel="${file#$SRC/}"
+    CURRENT=$((CURRENT + 1))
+    progress_bar $CURRENT $FILE_COUNT "$rel"
+
+    if copy_file "$file" "$rel"; then
+      COPIED=$((COPIED + 1))
+    else
+      SKIPPED=$((SKIPPED + 1))
+    fi
+  done
+}
+
+if [[ "$SKILLS_ONLY" == true ]]; then
+  install_files "$SRC/.claude/skills"
+else
+  install_files "$SRC"
 fi
 
+echo ""
+echo ""
+ok "Files installed: ${FILE_COUNT} total"
+if [[ "$NO_OVERWRITE" == true ]]; then
+  info "Skipped (already exist): check above for warnings"
+fi
 echo ""
 
 # ---------- post-install validation ----------
@@ -140,9 +202,9 @@ fi
 
 # ---------- done ----------
 echo ""
-echo "============================================"
-echo "  Setup Complete!"
-echo "============================================"
+echo -e "${BOLD}============================================${NC}"
+echo -e "${GREEN}${BOLD}  Setup Complete!${NC}"
+echo -e "${BOLD}============================================${NC}"
 echo ""
 echo "Next steps:"
 echo ""
