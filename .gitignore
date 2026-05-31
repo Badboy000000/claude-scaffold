@@ -1,0 +1,9 @@
+# Scaffold repo exclusions
+template/.claude/scripts/.env
+template/.claude/scripts/.embedding_cache/
+template/.claude/settings.local.json
+template/.claude/skills/skills/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PROJECT_DIR}/.claude/scripts/sync-routes.py\" --dry-run"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(python .claude/scripts/sync-routes.py:*)",
+      "Bash(python \".claude/scripts/sync-routes.py\":*)",
+      "Bash(python .claude/scripts/match-skill.py:*)",
+      "Bash(python \".claude/scripts/match-skill.py\":*)"
+    ]
+  }
+}

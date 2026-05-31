@@ -1,0 +1,178 @@
+{
+  "version": "1.0",
+  "skills": {
+    "diagnose": {
+      "triggers": [
+        "报错日志",
+        "启动失败",
+        "接口请求失败",
+        "性能问题",
+        "异常行为",
+        "Bug 排查"
+      ],
+      "description": "通过复现→定位→假设→验证→修复的流程排查 Bug 和性能问题",
+      "priority": 2,
+      "category": "debugging"
+    },
+    "grill-with-docs": {
+      "triggers": [
+        "需求不清楚",
+        "方案模糊",
+        "产品想法不明确",
+        "技术设计需要对齐",
+        "项目改造规划",
+        "不知道怎么实现",
+        "还没想清楚",
+        "思路不确定"
+      ],
+      "description": "通过逐轮追问、对照代码和文档，将模糊想法澄清为可执行方案",
+      "priority": 3,
+      "category": "clarification"
+    },
+    "zoom-out": {
+      "triggers": [
+        "理解代码逻辑",
+        "了解模块关系",
+        "查看项目结构",
+        "想知道代码上下文"
+      ],
+      "description": "提升抽象层级，给出模块、调用者和领域术语的全景地图",
+      "priority": 4,
+      "category": "understanding"
+    },
+    "improve-codebase-architecture": {
+      "triggers": [
+        "架构混乱",
+        "模块边界不清",
+        "找重构点",
+        "提升代码可测试性",
+        "模块解耦"
+      ],
+      "description": "发现架构摩擦点，提出深化模块的重构方案",
+      "priority": 5,
+      "category": "architecture"
+    },
+    "prototype": {
+      "triggers": [
+        "快速验证技术方案",
+        "做可丢弃原型",
+        "UI 方案对比",
+        "状态机验证"
+      ],
+      "description": "构建可丢弃的交互原型，验证设计方案后删除或沉淀结论",
+      "priority": 6,
+      "category": "development"
+    },
+    "tdd": {
+      "triggers": [
+        "新功能开发",
+        "复杂业务逻辑实现",
+        "原因已明确的 Bug 修复",
+        "需要测试保障的重构"
+      ],
+      "description": "以红-绿-重构循环进行测试驱动开发，通过公共接口验证行为",
+      "priority": 7,
+      "category": "development"
+    },
+    "to-prd": {
+      "triggers": [
+        "整理需求文档",
+        "生成 PRD",
+        "输出产品需求文档"
+      ],
+      "description": "基于对话上下文和代码库理解，合成结构化的 PRD 文档",
+      "priority": 8,
+      "category": "planning"
+    },
+    "to-issues": {
+      "triggers": [
+        "拆分开发任务",
+        "生成 Issue 清单",
+        "工作拆解",
+        "任务分解"
+      ],
+      "description": "将计划拆分为垂直切片式的、可独立领取的 Issue",
+      "priority": 9,
+      "category": "planning"
+    },
+    "triage": {
+      "triggers": [
+        "判断任务类型",
+        "评估任务状态",
+        "Issue 分类",
+        "判断是否适合 AI 处理"
+      ],
+      "description": "对 Issue 进行分类、状态流转和 AI 适合度判断",
+      "priority": 10,
+      "category": "meta"
+    },
+    "write-a-skill": {
+      "triggers": [
+        "创建新 Skill",
+        "优化已有 Skill",
+        "编写技能"
+      ],
+      "description": "按标准模板创建或优化 Agent Skill",
+      "priority": 11,
+      "category": "meta"
+    },
+    "setup-matt-pocock-skills": {
+      "triggers": [
+        "初始化 Skills 配置",
+        "检查 Skills 配置完整性",
+        "验证项目工程配置"
+      ],
+      "description": "初始化或验证项目的 Skills 工程配置（skills/rules/docs 完整性）",
+      "priority": 12,
+      "category": "meta"
+    },
+    "caveman": {
+      "triggers": [
+        "要求极简输出",
+        "少废话",
+        "直接给结论",
+        "压缩回复"
+      ],
+      "description": "极简输出模式，去掉所有冗余词句，只保留技术实质",
+      "priority": 13,
+      "category": "style"
+    },
+    "grill-me": {
+      "triggers": [
+        "非项目强相关的方案评审",
+        "想法挑战",
+        "设计追问"
+      ],
+      "description": "对用户的方案或想法进行持续追问，遍历决策树的每个分支",
+      "priority": 14,
+      "category": "clarification"
+    },
+    "skill-router": {
+      "triggers": [
+        "技能路由",
+        "选择哪个 Skill",
+        "路由判断"
+      ],
+      "description": "根据用户意图自动匹配最合适的 Skill，管理路由索引",
+      "priority": 1,
+      "category": "meta"
+    },
+    "self-improving-agent": {
+      "triggers": [
+        "命令失败",
+        "用户纠正错误",
+        "请求新功能",
+        "外部工具报错",
+        "知识过时",
+        "发现更好做法",
+        "把错误记下来",
+        "记录这个教训",
+        "记住这个问题"
+      ],
+      "description": "记录错误与学习，促进持续改进",
+      "priority": 10,
+      "category": "meta",
+      "content_hash": "c698ee5c6a142866"
+    }
+  }
+}
